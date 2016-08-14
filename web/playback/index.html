@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Playback</title>
+		<link rel="stylesheet" href="style.css">
+	</head>
+	<body>
+		<div id="group-info">
+			<div id="is-playing">Not Playing</div>
+			<div id="progress-text"></div>
+		</div>
+
+		<div id="group-bar">
+			<progress id="progress"></progress>
+		</div>
+
+		<div id="group-buttons">
+			<button id="mute">Mute</button>
+			<button id="skip-back">&lt;</button>
+			<button id="pause">||</button>
+			<button id="skip-forward">&gt;</button>
+			<button id="exit">Exit</button>
+		</div>
+
+		<div id="group-volume">
+			Volume <span id="volume-text"></span><br>
+			<input id="volume" type="range">
+		</div>
+
+		<script src="/webstuff.js"></script>
+		<script src="script.js"></script>
+	</body>
+</html>
