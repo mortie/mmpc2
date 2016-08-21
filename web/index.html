@@ -3,12 +3,24 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="style.css">
 		<title>Mort's Media PC</title>
 	</head>
 	<body>
-		<form method="post" action="/plaything">
-			<button>Hello There!</button>
-		</form>
+		<div id="parts">
+			<form class="part" method="post" action="/play/link">
+				<div class="name">URL:</div>
+				<input type="url" name="url" autocomplete="off">
+				<button>Play</button>
+			</form>
+
+			<form class="part" method="post" action="/play/magnet">
+				<div class="name">Magnet Link:</div>
+				<input type="url" name="magnet" autocomplete="off">
+				<button>Play</button>
+			</form>
+		</div>
+
 		<script src="/webstuff.js"></script>
 	</body>
 </html>

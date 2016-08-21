@@ -1,0 +1,32 @@
+* {
+	box-sizing: border-box;
+}
+
+#parts {
+	max-width: 600px;
+	margin: auto;
+}
+
+#parts .part {
+	border-bottom: 1px solid #eee;
+	padding: 20px 10px;
+	padding-top: 17px;
+}
+#parts .part:last-child {
+	border-bottom: none;
+}
+#parts .part .name {
+	margin-bottom: 6px;
+}
+#parts .part input {
+	width: calc(100% - 80px);
+}
+#parts .part button {
+	width: 75px;
+	float: right;
+}
+
+#parts .part input,
+#parts .part button {
+	height: 25px;
+}

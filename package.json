@@ -10,6 +10,8 @@
   "author": "Martin Dørum Nygaard <martid0311@gmail.com> (http://mort.coffee)",
   "license": "ISC",
   "dependencies": {
-    "webstuff": "^1.3.0"
+    "mime": "^1.3.4",
+    "torrent-stream": "^1.0.3",
+    "webstuff": "^1.4.0"
   }
 }

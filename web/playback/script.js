@@ -120,3 +120,13 @@ elems.exit.addEventListener("click", function(evt) {
 elems.volume.addEventListener("change", function(evt) {
 	playerset("volume", evt.target.value);
 });
+elems.volume.addEventListener("keydown", function(evt) {
+	if (evt.keyCode === 37 || evt.keyCode === 40)
+		playerset("volume", parseInt(evt.target.value) - parseInt(evt.target.step));
+	else if (evt.keyCode === 38 || evt.keyCode === 39)
+		playerset("volume", parseInt(evt.target.value) + parseInt(evt.target.step));
+});
+
+window.addEventListener("keydown", function(evt) {
+	console.log(evt.keyCode);
+});

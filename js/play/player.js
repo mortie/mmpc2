@@ -3,6 +3,8 @@ var fs = require("fs");
 var net = require("net");
 var Queue = require("../queue");
 
+exports.httpPath = "/playback";
+
 var child = null;
 
 var ipcServer = process.cwd()+"/mpv-ipc-socket";
@@ -86,13 +88,15 @@ exports.play = function(path, cb) {
 
 	var lchild = spawn("mpv", [
 		path,
-		"--input-ipc-server", ipcServer
+		"--no-cache-pause",
+		"--input-unix-socket", ipcServer
 	], { stdio: "inherit" });
 	child = lchild;
 
 	lchild.running = true;
 
 	lchild.once("close", () => {
+		console.log("child closed");
 		if (lchild.running) exports.stop();
 	});
 	lchild.on("error", err => console.error(err.toString()));
@@ -100,9 +104,7 @@ exports.play = function(path, cb) {
 	lchild.state = {};
 	lchild.msgqueue = Queue();
 
-	console.log("lchild is "+lchild);
 	lchild.initTimeout = setTimeout(() => {
-		console.log("lchild still is "+lchild);
 		// Create socket
 		lchild.sock = net.connect(ipcServer, () => {
 
@@ -118,7 +120,6 @@ exports.play = function(path, cb) {
 
 			lchild.sock.on("error", err => console.trace(err));
 
-			// Set fullscreen
 			cmd(["set_property", "fullscreen", "yes"]);
 
 			cb();
@@ -132,6 +133,8 @@ exports.stop = function() {
 		child.kill("SIGKILL");
 		clearTimeout(child.initTimeout);
 		child = null;
+
+		exports.onstop();
 	}
 	try {
 		fs.unlinkSync(ipcServer);
@@ -140,7 +143,7 @@ exports.stop = function() {
 
 exports.init = function(app) {
 	function evt(p, cb) {
-		app.post("/playback/"+p, (req, res) => cb(req, res));
+		app.post(exports.httpPath+"/"+p, (req, res) => cb(req, res));
 	}
 
 	evt("exit", (req, res) => { res.end(); exports.stop() });
