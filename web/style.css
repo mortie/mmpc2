@@ -8,7 +8,7 @@
 }
 
 #parts .part {
-	border-bottom: 1px solid #eee;
+	border-bottom: 1px solid #ccc;
 	padding: 20px 10px;
 	padding-top: 17px;
 }
@@ -28,5 +28,5 @@
 
 #parts .part input,
 #parts .part button {
-	height: 25px;
+	height: 28px;
 }

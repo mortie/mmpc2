@@ -83,20 +83,27 @@ exports.isPlaying = function() {
 	return child != null;
 }
 
-exports.play = function(path, cb) {
+exports.play = function(path, subFile, cb) {
 	exports.stop();
 
-	var lchild = spawn("mpv", [
+	var args = [
 		path,
 		"--no-cache-pause",
+		"--no-resume-playback",
 		"--input-unix-socket", ipcServer
-	], { stdio: "inherit" });
+	];
+
+	if (subFile) {
+		args.push("--sub-file");
+		args.push(subFile);
+	}
+
+	var lchild = spawn("mpv", args, { stdio: "inherit" });
 	child = lchild;
 
 	lchild.running = true;
 
 	lchild.once("close", () => {
-		console.log("child closed");
 		if (lchild.running) exports.stop();
 	});
 	lchild.on("error", err => console.error(err.toString()));

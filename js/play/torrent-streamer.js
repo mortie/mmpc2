@@ -2,7 +2,6 @@ var httpStream = require("./http-stream");
 var torrentStream = require("torrent-stream");
 
 var mediarx = /\.(mp4|mkv|mov|avi|ogv)$/;
-var tmpdir = process.cwd()+"/tmp";
 
 var engine;
 var conf;
@@ -16,9 +15,13 @@ exports.stream = function(magnet, cb) {
 		return engine.destroy(() =>
 			{ engine = null; exports.stream(magnet, cb) });
 
-	engine = torrentStream(magnet, {
-		tmp: conf.tmpdir
-	});
+	try {
+		engine = torrentStream(magnet, {
+			tmp: conf.tmpdir
+		});
+	} catch (err) {
+		return cb(err.toString());
+	}
 
 	engine.on("ready", () => {
 		var file = null;
@@ -36,17 +39,14 @@ exports.stream = function(magnet, cb) {
 		file.select();
 
 		httpStream.readStreamCreator = function(options) {
-			console.log("creating stream with", options);
 			var rs = file.createReadStream(options);
 			rs.filesize = file.length;
 			rs.filename = file.name;
 
-			rs.on("close", () => console.log("stream closing"));
-
 			return rs;
 		}
 
-		cb();
+		cb(null, file.length, file.name);
 	});
 }
 

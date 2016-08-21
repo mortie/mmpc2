@@ -18,12 +18,12 @@ app.express.use((req, res, next) => {
 
 app.static("web");
 
-app.post("/play/link", (req, res) => {
+app.post("/play/url", (req, res) => {
 	req.parseBody((err, fields) => {
 		if (!fields.url)
 			return res.redirect("/");
 
-		play.playFile(fields.url, () => {
+		play.playUrl(fields.url, () => {
 			res.redirect(play.httpPath);
 		});
 	});
