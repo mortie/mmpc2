@@ -98,7 +98,7 @@ exports.play = function(path, subFile, cb) {
 		args.push(subFile);
 	}
 
-	var lchild = spawn("mpv", args, { stdio: "inherit" });
+	var lchild = spawn("mpv", args, { stdio: ["inherit", "inherit", "ignore"] });
 	child = lchild;
 
 	lchild.running = true;
