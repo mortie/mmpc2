@@ -90,7 +90,7 @@ exports.play = function(path, subFile, cb) {
 		path,
 		"--no-cache-pause",
 		"--no-resume-playback",
-		"--input-unix-socket", ipcServer
+		"--input-ipc-server", ipcServer
 	];
 
 	if (subFile) {

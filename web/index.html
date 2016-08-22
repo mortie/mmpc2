@@ -19,8 +19,15 @@
 				<input type="url" name="magnet" autocomplete="off">
 				<button>Play</button>
 			</form>
+
+			<form class="part" method="post" enctype="multipart/form-data" action="/play/file">
+				<div class="name">File:</div>
+				<input type="file" name="file" autocomplete="off">
+				<button>Play</button>
+			</form>
 		</div>
 
 		<script src="/webstuff.js"></script>
+		<script src="/script.js"></script>
 	</body>
 </html>
