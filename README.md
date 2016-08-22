@@ -75,6 +75,6 @@ install it through pip (installing pip if necessary)
 `conf.json.example` to `conf.json`). These are:
 
 	{
-		"tmpdir": String. The directory to store temporary files in. Default: `"tmp"`
-		"subtitles": String (or `false`). The language code for the subtitles, or `false` for no subtitles. Default: `"en"` (english).
+		"tmpdir": String. The directory to store temporary files in. Default: "tmp"
+		"subtitles": String (or false). The language code for the subtitles, or false for no subtitles. Default: "en" (english).
 	}
