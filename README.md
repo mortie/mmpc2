@@ -75,6 +75,15 @@ install it through pip (installing pip if necessary)
 `conf.json.example` to `conf.json`). These are:
 
 	{
-		"tmpdir": String. The directory to store temporary files in. Default: "tmp"
-		"subtitles": String (or false). The language code for the subtitles, or false for no subtitles. Default: "en" (english).
+		"tmpdir": String. The directory to store temporary files in.
+			Default: "tmp"
+
+		"subtitles": String (or false). The language code for the subtitles,
+			or false for no subtitles. Default: "en" (english).
+
+		"additional_links": Array of objects which look like this:
+			{ "name": "some name", "url": "some URL" }
+			Lets you add more parts to the index page. I use it to link to an
+			instance of guacamole, a web based VNC client.
+			( https://guacamole.incubator.apache.org/ )
 	}

@@ -1,4 +1,5 @@
 {
 	"tmpdir": "tmp",
-	"subtitles": "en"
+	"subtitles": "en",
+	"additional_links": []
 }

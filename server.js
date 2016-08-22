@@ -62,3 +62,7 @@ app.post("/play/file", (req, res) => {
 		});
 	});
 });
+
+app.get("/additional-links", (req, res) => {
+	res.json(conf.additional_links);
+});
