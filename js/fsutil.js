@@ -28,7 +28,6 @@ exports.move = function(src, dst, cb) {
  * Remove directory, deleting its content in the process
  */
 exports.rmdir = function(dir) {
-	console.log("rmdir", dir);
 	try {
 		fs.accessSync(dir, fs.F_OK)
 	} catch (err) {

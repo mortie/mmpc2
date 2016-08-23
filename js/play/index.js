@@ -76,7 +76,11 @@ player.onstop = function() {
 	httpStream.stop();
 
 	exports.cleanupFiles.forEach(f => {
-		fs.unlink(f, err => { if (err) console.trace(err) });
+		try {
+			fs.unlink(f, err => { if (err) console.trace(err) });
+		} catch (err) {
+			console.trace(err);
+		}
 	});
 	exports.cleanupFiles = [];
 
