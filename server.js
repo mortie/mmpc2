@@ -1,6 +1,7 @@
 var fs = require("fs");
 var pathlib = require("path");
 var web = require("webstuff");
+var notify = require("./js/notify");
 var play = require("./js/play");
 var fsutil = require("./js/fsutil");
 
@@ -23,24 +24,22 @@ app.post("/play/url", (req, res) => {
 		if (!fields.url)
 			return res.redirect("/");
 
-		play.playUrl(fields.url, () => {
+		function cb() {
 			res.redirect(play.httpPath);
-		});
-	});
-});
+		}
 
-app.post("/play/magnet", (req, res) => {
-	req.parseBody((err, fields) => {
-		if (!fields.magnet)
-			return res.redirect("/");
-
-		play.playTorrent(fields.magnet, () => {
-			res.redirect(play.httpPath);
-		});
+		if (fields.url.indexOf("magnet:") === 0) {
+			play.playTorrent(fields.url, cb);
+		} else if (fields.url.indexOf("/torrent") !== -1) {
+			play.playTorrentPage(fields.url, cb);
+		} else {
+			play.playUrl(fields.url, cb);
+		}
 	});
 });
 
 app.post("/play/file", (req, res) => {
+	notify("Receiving file...");
 	req.parseBody((err, fields, files) => {
 		var file = files.file;
 

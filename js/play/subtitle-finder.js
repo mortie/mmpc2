@@ -41,12 +41,13 @@ exports.find = function(filesize, filename, cb) {
 
 			res
 				.on("error", err => {
+					notify("Error finding subtitles", err.toString());
 					console.trace(err);
 					cb();
 				})
 				.on("end", () => {
 					ws.close();
-					cb(subFile);
+					setTimeout(() => cb(subFile), 500);
 				});
 		}).end();
 	});

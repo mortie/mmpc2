@@ -1,7 +1,17 @@
 var httpStream = require("./http-stream");
 var torrentStream = require("torrent-stream");
 
-var mediarx = /\.(mp4|mkv|mov|avi|ogv)$/;
+var mediaformats = [
+	"webm", "mkv", "flv", "vob", "avi", "mov","wmv", "you",
+	"asf", "mp4", "m4p", "m4v", "svi", "ogv", "ogg"
+]
+
+var rxstr = 
+	"\\.("+
+	mediaformats.join("|")+
+	")$";
+
+var mediarx = new RegExp(rxstr, "i");
 
 var engine;
 var conf;

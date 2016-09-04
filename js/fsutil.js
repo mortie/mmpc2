@@ -31,7 +31,7 @@ exports.rmdir = function(dir) {
 	try {
 		fs.accessSync(dir, fs.F_OK)
 	} catch (err) {
-		console.trace(err);
+		console.log(err.toString());
 		return;
 	}
 

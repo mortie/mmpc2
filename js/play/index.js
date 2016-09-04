@@ -1,6 +1,10 @@
 var fs = require("fs");
+var http = require("http");
+var https = require("https");
 var pathlib = require("path");
+var urllib = require("url");
 var fsutil = require("../fsutil");
+var notify = require("../notify");
 var player = require("./player");
 var httpStream = require("./http-stream");
 var torrentStreamer = require("./torrent-streamer");
@@ -29,6 +33,8 @@ exports.init = function(_app, _conf) {
 exports.playFile = function(path, cb, filename) {
 	filename = filename || pathlib.basename(path);
 
+	notify("Playing file", filename);
+
 	// Find file's length
 	fs.stat(path, (err, stat) => {
 		if (err) {
@@ -38,7 +44,6 @@ exports.playFile = function(path, cb, filename) {
 
 		// Find subtitles
 		subtitleFinder.find(stat.size, filename, subFile => {
-			exports.cleanupFiles.push(subFile);
 
 			// Play!
 			player.play(path, subFile, cb);
@@ -46,13 +51,17 @@ exports.playFile = function(path, cb, filename) {
 	});
 }
 
-exports.playUrl = function(path, cb) {
+exports.playUrl = function(url, cb) {
+
+	notify("Playing url...", url);
 
 	// Just play, we won't bother finding subtitles
-	player.play(path, null, cb);
+	player.play(url, null, cb);
 }
 
 exports.playTorrent = function(magnet, cb) {
+
+	notify("Playing torrent...");
 
 	// Stream torrent
 	torrentStreamer.stream(magnet, (err, filesize, filename) => {
@@ -61,12 +70,49 @@ exports.playTorrent = function(magnet, cb) {
 
 		// Find subtitles
 		subtitleFinder.find(filesize, filename, subFile => {
-			exports.cleanupFiles.push(subFile);
 
 			// Play!
+			notify("Starting playback.", filename);
 			player.play(app.getAddress()+httpStream.httpPath, subFile, cb);
 		});
 	});
+}
+
+exports.playTorrentPage = function(url, cb) {
+	function findMagnet(str) {
+		var rx = /['"](magnet:[^'"]+)['"]/;
+		var match = str.match(rx);
+		if (!match)
+			return null;
+
+		return match[1];
+	}
+
+	notify("Finding magnet on torrent page...", url);
+
+	var urlobj = urllib.parse(url);
+	var o = urlobj.protocol === "https:" ? https : http;
+	o.request(urlobj, res => {
+		var str = "";
+
+		res
+			.on("data", d => str += d )
+			.on("error", err => {
+				notify("Error downloading page!", err.toString());
+				console.trace(err);
+				cb();
+			})
+			.on("end", () => {
+				var magnet = findMagnet(str);
+				if (!magnet) {
+					notify("No magnet link on page!");
+					cb();
+					return;
+				}
+
+				exports.playTorrent(magnet, cb);
+			});
+	}).end();
 }
 
 exports.isPlaying = player.isPlaying;
@@ -79,7 +125,7 @@ player.onstop = function() {
 		try {
 			fs.unlink(f, err => { if (err) console.trace(err) });
 		} catch (err) {
-			console.trace(err);
+			console.log(err.toString());
 		}
 	});
 	exports.cleanupFiles = [];
