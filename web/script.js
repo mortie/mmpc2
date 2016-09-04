@@ -5,7 +5,7 @@ get("/additional-links", function(err, res) {
 	JSON.parse(res).forEach(function(link) {
 		var form = document.createElement("form");
 		form.className = "part";
-		form.method = "get";
+		form.method = link.method || "get";
 		form.action = link.url;
 
 		var btn = document.createElement("button");
