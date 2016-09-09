@@ -18,6 +18,13 @@ var elems = {
 
 	volume: $$("#volume"),
 	volume_text: $$("#volume-text"),
+
+	sub_delay: $$("#sub-delay"),
+	sub_delay_less: $$("#sub-delay-less"),
+	sub_delay_less2: $$("#sub-delay-less2"),
+	sub_delay_more: $$("#sub-delay-more"),
+	sub_delay_more2: $$("#sub-delay-more2"),
+	sub_delay_reset: $$("#sub-delay-reset")
 };
 
 var state = {};
@@ -52,7 +59,10 @@ function update(state) {
 	elems.volume.max = state.volume_max;
 	elems.volume.value = state.volume;
 	elems.volume.step = 5;
-	elems.volume_text.innerHTML = state.volume+"%";
+	elems.volume_text.innerHTML = state.volume;
+
+	// Sub Delay
+	elems.sub_delay.innerHTML = state.sub_delay;
 }
 
 function checkState() {
@@ -125,6 +135,27 @@ elems.volume.addEventListener("keydown", function(evt) {
 		playerset("volume", parseInt(evt.target.value) - parseInt(evt.target.step));
 	else if (evt.keyCode === 38 || evt.keyCode === 39)
 		playerset("volume", parseInt(evt.target.value) + parseInt(evt.target.step));
+});
+
+// Less subtitle delay
+elems.sub_delay_less.addEventListener("click", function() {
+	playerset("sub-delay", state.sub_delay - 0.1);
+});
+elems.sub_delay_less2.addEventListener("click", function() {
+	playerset("sub-delay", state.sub_delay - 1);
+});
+
+// More subtitle delay
+elems.sub_delay_more.addEventListener("click", function() {
+	playerset("sub-delay", state.sub_delay + 0.1);
+});
+elems.sub_delay_more2.addEventListener("click", function() {
+	playerset("sub-delay", state.sub_delay + 1);
+});
+
+// Set subtitle delay to 0
+elems.sub_delay_reset.addEventListener("click", function() {
+	playerset("sub-delay", 0);
 });
 
 window.addEventListener("keydown", function(evt) {

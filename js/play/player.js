@@ -41,7 +41,7 @@ function getState(cb) {
 		playing: true
 	};
 
-	var cbs = 6;
+	var cbs = 7;
 	function next() {
 		cbs -= 1;
 		if (cbs === 0)
@@ -75,6 +75,11 @@ function getState(cb) {
 
 	cmd(["get_property", "volume-max"], res => {
 		state.volume_max = res.data;
+		next();
+	});
+
+	cmd(["get_property", "sub-delay"], res => {
+		state.sub_delay = res.data;
 		next();
 	});
 }

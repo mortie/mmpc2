@@ -1,5 +1,7 @@
 * {
 	box-sizing: border-box;
+	line-height: 30px;
+	font-family: Sans-Serif
 }
 
 body {
@@ -26,17 +28,9 @@ button.active {
 	background: #aaa;
 }
 
-progress {
-	width: 100%;
-	height: 24px;
-}
-
-input[type="range"] {
-	border: 1px solid rgba(0, 0, 0, 0);
-	box-sizing: border-box;
-	margin: 0px;
-	width: 100%;
-}
+/*
+ * Playback
+ */
 
 #is-playing,
 #progress-text {
@@ -45,7 +39,51 @@ input[type="range"] {
 #progress-text {
 	float: right;
 }
-
 #group-buttons {
 	text-align: center;
+}
+
+progress {
+	width: 100%;
+	height: 24px;
+}
+
+/*
+ * Volume
+ */
+
+input[type="range"] {
+	border: 1px solid rgba(0, 0, 0, 0);
+	box-sizing: border-box;
+	margin: 0px;
+	width: 100%;
+}
+
+#group-volume {
+	text-align: center;
+	border-top: 1px solid #ccc;
+}
+
+#group-volume {
+	padding-top: 12px;
+	margin-top: 24px;
+}
+
+/*
+ * Sub Delay
+ */
+
+#group-sub-delay {
+	text-align: center;
+}
+
+#group-sub-delay {
+	border-top: 1px solid #ccc;
+}
+
+#group-sub-delay {
+	padding-top: 12px;
+}
+#group-sub-delay button {
+	margin-top: 6px;
 }
