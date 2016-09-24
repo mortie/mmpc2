@@ -97,10 +97,12 @@ elems.progress.addEventListener("click", function(evt) {
 
 // Toggle pause
 elems.pause.addEventListener("click", function() {
-	if (state.paused)
+	if (state.paused) {
 		playerset("pause", "no");
-	else
+	} else {
 		playerset("pause", "yes");
+		playerset("time-pos", state.time_pos - 1);
+	}
 });
 
 // Back 15 seconds
