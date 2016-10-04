@@ -82,6 +82,11 @@ function onTerm() {
 	process.exit();
 }
 
-process.on("exit", onTerm);
-process.on("SIGINT", onTerm);
-process.on("SIGTERM", onTerm);
+process.on("exit", () => onTerm);
+process.on("SIGINT", () => onTerm);
+process.on("SIGTERM", () => onTerm);
+
+process.on("uncaughtException", err => {
+	console.trace(err);
+	onTerm();
+});
