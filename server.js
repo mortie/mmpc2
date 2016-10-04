@@ -3,12 +3,16 @@ var pathlib = require("path");
 var web = require("webstuff");
 var notify = require("./js/notify");
 var play = require("./js/play");
+var remote = require("./js/remote");
 var fsutil = require("./js/fsutil");
 
 var conf = JSON.parse(fs.readFileSync("conf.json"));
 
-var app = web();
+var app = web({
+	reload: false
+});
 play.init(app, conf);
+remote.init(app, conf);
 
 app.express.use((req, res, next) => {
 	if (req.url === "/" && play.isPlaying())

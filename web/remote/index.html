@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Remote Control</title>
+		<link rel="stylesheet" href="style.css">
+	</head>
+	<body>
+		<div id="content">
+			<img id="screen" src="screenshot">
+
+			<div id="controls">
+				<form id="keyboard-form"><input id="keyboard" autocomplete="off" autocapitalize="none"></form>
+				<button id="backspace">Backspace</button>
+				<button id="space">Space</button>
+			</div>
+
+			<div id="log" style="height: 100px; overflow: auto;"></div>
+		</div>
+
+		<script src="/webstuff.js"></script>
+		<script src="socket.js"></script>
+		<script src="mouse.js"></script>
+		<script src="script.js"></script>
+	</body>
+</html>
