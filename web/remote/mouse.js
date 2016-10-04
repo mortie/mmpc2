@@ -1,5 +1,6 @@
 var mouse = {
 	elem: $$("#screen-img"),
+	cursor: $$("#screen-cursor"),
 
 	x: 0,
 	y: 0,
@@ -60,6 +61,13 @@ var mouse = {
 				x: this.x,
 				y: this.y
 			});
+
+			var cx = this.elem.offsetLeft +
+				(this.x / (this.maxx / this.elem.offsetWidth));
+			var cy = this.elem.offsetTop +
+				(this.y / (this.maxy / this.elem.offsetHeight));
+
+			this.cursor.style.transform = "translate("+cx+"px, "+cy+"px)";
 		}
 	}
 };
