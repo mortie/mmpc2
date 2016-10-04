@@ -42,10 +42,13 @@
 	}
 	function onclose() {
 		open = false;
-		sock = new WebSocket(url);
-		sock.onopen = onopen;
-		sock.onerror = sock.onclose = onclose;
-		sock.onmessage = onmessage;
+
+		setTimeout(function() {
+			sock = new WebSocket(url);
+			sock.onopen = onopen;
+			sock.onerror = sock.onclose = onclose;
+			sock.onmessage = onmessage;
+		}, 2000);
 	}
 
 	sock.onopen = onopen;
