@@ -42,10 +42,10 @@
 	}
 	function onclose() {
 		open = false;
-		/*sock = new WebSocket(url);
+		sock = new WebSocket(url);
 		sock.onopen = onopen;
 		sock.onerror = sock.onclose = onclose;
-		sock.onmessage = onmessage;*/
+		sock.onmessage = onmessage;
 	}
 
 	sock.onopen = onopen;
