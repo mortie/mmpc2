@@ -33,8 +33,8 @@ var mouse = {
 	setPosScaled: function(x, y) {
 		var mx = x - this.elem.offsetLeft;
 		var my = y - this.elem.offsetTop;
-		var sx = this.maxx / this.elem.width;
-		var sy = this.maxy / this.elem.height;
+		var sx = this.maxx / this.elem.offsetWidth;
+		var sy = this.maxy / this.elem.offsetHeight;
 
 		this.setPos(mx * sx, my * sy);
 	},
