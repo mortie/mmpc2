@@ -2,66 +2,47 @@ var WSServer = require("ws").Server;
 var spawnSync = require("child_process").spawnSync;
 var fs = require("fs");
 
+var cmd = require("./cmd");
+
 exports.httpPath = "/remote";
-
-function xdo(cmds) {
-	var res = spawnSync("xdotool", cmds);
-	if (res.status !== 0)
-		throw "Couldn't run xdotool: "+(res.error || res.staus);
-}
-
-function mktemp(ext) {
-	var format = "/tmp/mmpc2-XXXXXXXX";
-	if (ext)
-		format += ext;
-
-	var res = spawnSync("mktemp", [format]);
-	if (res.status === 0)
-		return res.stdout.toString().trim();
-	else
-		throw "Couldn't create temporary file: "+(res.error || res.status);
-}
-function screenshot(path) {
-	var res = spawnSync("import", [
-		"-window", "root",
-		path
-	]);
-	if (res.status !== 0)
-		throw "Couldn't run import: "+(res.error || res.status);
-}
 
 var handlers = {
 	type: function(data) {
-		xdo(["type", data.chars]);
-		xdo(["key", "Return"]);
+		cmd.xdo(["type", data.chars]);
+		cmd.xdo(["key", "Return"]);
 	},
 
 	key: function(data) {
-		xdo(["key", data.key]);
+		cmd.xdo(["key", data.key]);
 	},
 
 	mousemove: function(data) {
-		xdo(["mousemove", data.x, data.y]);
+		cmd.xdo(["mousemove", data.x, data.y]);
 	},
 
 	mousedown: function(data) {
-		xdo(["mousedown", data.btn]);
+		cmd.xdo(["mousedown", data.btn]);
 	},
 
 	mouseup: function(data) {
-		xdo(["mouseup", data.btn]);
+		cmd.xdo(["mouseup", data.btn]);
 	},
 
 	click: function(data) {
-		xdo(["click", data.btn]);
+		cmd.xdo(["click", data.btn]);
 	}
 }
 
 var sockets = [];
 function broadcast(name) {
-	sockets.forEach(sock => {
-		if (sock)
-			sock.send(name);
+	sockets.forEach((sock, i) => {
+		if (sock) {
+			try {
+				sock.send(name);
+			} catch (err) {
+				sockets[i] = undefined;
+			}
+		}
 	});
 }
 
@@ -102,8 +83,8 @@ exports.init = function(app, conf) {
 		});
 	});
 
-	var screenshotFile = mktemp(".jpg");
-	screenshot(screenshotFile);
+	var screenshotFile = cmd.mktemp(".jpg");
+	cmd.screenshot(screenshotFile);
 	app.get("/remote/screenshot", (req, res) => {
 		res.writeHead(200, {
 			"Cache-Control": "no-store, must-revalidate",
@@ -117,8 +98,14 @@ exports.init = function(app, conf) {
 
 	setInterval(() => {
 		if (nSockets > 0) {
-			screenshot(screenshotFile);
+			cmd.screenshot(screenshotFile);
 			broadcast("reload-screenshot");
 		}
 	}, 1000);
+
+	function onTerm() {
+		fs.unlinkSync(screenshotFile);
+	}
+
+	exports.onTerm = onTerm;
 }

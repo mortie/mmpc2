@@ -69,3 +69,19 @@ app.post("/play/file", (req, res) => {
 app.get("/additional-links", (req, res) => {
 	res.json(conf.additional_links);
 });
+
+var termed = false;
+function onTerm() {
+	if (termed)
+		return;
+	termed = true;
+
+	// Run exit handlers (currently only remote needs to do anything on exit)
+	remote.onTerm();
+
+	process.exit();
+}
+
+process.on("exit", onTerm);
+process.on("SIGINT", onTerm);
+process.on("SIGTERM", onTerm);
