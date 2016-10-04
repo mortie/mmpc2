@@ -104,27 +104,29 @@ var contexted = false;
 // Mouse controls on the image
 (function() {
 	var down = false;
-	elems.screen.addEventListener("mousedown", function(evt) {
+	elems.screen_img.addEventListener("mousedown", function(evt) {
+		evt.preventDefault();
 		if (touched) return;
 
 		down = true;
 		mouse.setPosScaled(evt.clientX, evt.clientY);
 		socket.emit("mousedown", { btn: 1 });
 	});
-	elems.screen.addEventListener("mousemove", function(evt) {
+	elems.screen_img.addEventListener("mousemove", function(evt) {
+		evt.preventDefault();
 		if (touched) return;
+
 		mouse.setPosScaled(evt.clientX, evt.clientY);
 	});
 	window.addEventListener("mouseup", function(evt) {
 		if (touched) return;
 
 		if (down) {
-			mouse.setPosScaled(evt.clientX, evt.clientY);
 			socket.emit("mouseup", { btn: 1 });
 			down = false;
 		}
 	});
-	elems.screen.addEventListener("contextmenu", function(evt) {
+	elems.screen_img.addEventListener("contextmenu", function(evt) {
 		contexted = true;
 		evt.preventDefault();
 		socket.emit("click", { btn: 3 });

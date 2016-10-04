@@ -1,5 +1,5 @@
 var mouse = {
-	elem: $$("#screen"),
+	elem: $$("#screen-img"),
 
 	x: 0,
 	y: 0,
