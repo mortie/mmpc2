@@ -104,15 +104,16 @@ var contexted = false;
 // Mouse controls on the image
 (function() {
 	var down = false;
-	elems.screen_img.addEventListener("mousedown", function(evt) {
+	elems.screen.addEventListener("mousedown", function(evt) {
 		evt.preventDefault();
 		if (touched) return;
+		if (evt.buttons !== 1) return;
 
 		down = true;
 		mouse.setPosScaled(evt.clientX, evt.clientY);
 		socket.emit("mousedown", { btn: 1 });
 	});
-	elems.screen_img.addEventListener("mousemove", function(evt) {
+	elems.screen.addEventListener("mousemove", function(evt) {
 		evt.preventDefault();
 		if (touched) return;
 
@@ -126,7 +127,7 @@ var contexted = false;
 			down = false;
 		}
 	});
-	elems.screen_img.addEventListener("contextmenu", function(evt) {
+	elems.screen.addEventListener("contextmenu", function(evt) {
 		contexted = true;
 		evt.preventDefault();
 		socket.emit("click", { btn: 3 });
