@@ -1,26 +1,40 @@
+var spawn = require("child_process").spawn;
 var spawnSync = require("child_process").spawnSync;
 
 exports.xdo = xdo;
 exports.mktemp = mktemp;
 exports.screenshot = screenshot;
 
-function run(name, args) {
-	var res = spawnSync(name, args);
-
-	if (res.status === 0) {
-		return res.stdout.toString();
-	} else {
-		var err = "Error with command "+name+" "+
-			args.map(a => "'"+a+"'").join(" ")+
-			":\n" +
-			res.error || res.stderr.toString() || res.status;
-
-		throw err;
-	}
+function errStr(name, args, child) {
+	return  "Error with command "+name+" "+
+		args.map(a => "'"+a+"'").join(" ")+
+		":\n" +
+		child.error || child.stderr.toString() || child.status;
 }
 
-function xdo(cmds) {
-	return run("xdotool", cmds);
+function run(name, args, cb) {
+	var child = spawn(name, args);
+	child.on("close", code => {
+		if (code === 0) {
+			if (cb)
+				cb(child.stdout.toString());
+		} else {
+			throw errStr(name, args, child);
+		}
+	});
+}
+
+function runSync(name, args) {
+	var child = spawnSync(name, args);
+
+	if (child.status === 0)
+		return child.stdout.toString();
+	else
+		throw errStr(name, args, child);
+}
+
+function xdo(cmds, cb) {
+	return run("xdotool", cmds, cb);
 }
 
 function mktemp(ext) {
@@ -28,13 +42,13 @@ function mktemp(ext) {
 	if (ext)
 		format += ext;
 
-	return run("mktemp", [format]).trim();
+	return runSync("mktemp", [format]).trim();
 }
 
-function screenshot(path) {
+function screenshot(path, cb) {
 	return run("import", [
 		"-window", "root",
 		path
-	]);
+	], cb);
 }
 

@@ -90,6 +90,8 @@ exports.init = function(app, conf) {
 		});
 	});
 
+	var screenshot = "";
+
 	var screenshotFile = cmd.mktemp(".jpg");
 	cmd.screenshot(screenshotFile);
 	app.get("/remote/screenshot", (req, res) => {
@@ -99,27 +101,34 @@ exports.init = function(app, conf) {
 			"Expires": "0",
 			"Content-Type": "image/jpg"
 		});
-		fs.createReadStream(screenshotFile)
-			.pipe(res);
+		res.end(screenshot);
 	});
 
 	// Update screenshot frequently if recently updated, or rarely otherwise
-	function updateScreenshot() {
+	function updateScreenshot(force) {
 		var update = false;
-		if (nSockets > 0 && recentlyUpdated)
+		if (force)
+			update = true;
+		else if (nSockets > 0 && recentlyUpdated)
 			update = true;
 		else if (nSockets > 0 && ++updateCounter >= 5)
 			update = true;
 
 		if (update) {
-			cmd.screenshot(screenshotFile);
-			broadcast("reload-screenshot");
+			cmd.screenshot(screenshotFile, () => {
+				fs.readFile(screenshotFile, (err, buf) => {
+					if (err)
+						console.error(err);
+					else
+						screenshot = buf;
+				});
+			});
 			updateCounter = 0;
 		}
 
 		setTimeout(updateScreenshot, 1000);
 	};
-	updateScreenshot();
+	updateScreenshot(true);
 
 	function onTerm() {
 		fs.unlinkSync(screenshotFile);

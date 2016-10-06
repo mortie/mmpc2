@@ -4,19 +4,15 @@ var mouse = {
 
 	x: 0,
 	y: 0,
-
-	vx: 0,
-	vy: 0,
+	px: 0,
+	py: 0,
 
 	maxx: 1920 - 1,
 	maxy: 1080 - 1,
 
-	addVel: function(x, y) {
-		this.vx += x;
-		this.vy += y;
-	},
-
 	setPos: function(x, y) {
+		this.px = this.x;
+		this.py = this.y;
 		x = Math.round(x);
 		if (x < 0) x = 0;
 		if (x > this.maxx) x = this.maxx;
@@ -27,7 +23,6 @@ var mouse = {
 		if (x !== this.x || y !== this.y) {
 			this.x = x;
 			this.y = y;
-			this.update();
 		}
 	},
 
@@ -45,30 +40,21 @@ var mouse = {
 	},
 
 	// Update at most once every x milliseconds
-	updated: false,
-	timeoutSet: false,
 	update: function() {
-		if (this.updated && !this.timeoutSet) {
-			this.timeoutSet = true;
-			setTimeout(function() {
-				this.updated = false;
-				this.timeoutSet = false;
-				this.update();
-			}.bind(this), 100);
-		} else {
-			this.updated = true;
-			socket.emit("mousemove", {
-				x: this.x,
-				y: this.y
-			});
+		socket.emit("mousemove", {
+			x: this.x,
+			y: this.y
+		});
 
-			var cx = this.elem.offsetLeft +
-				(this.x / (this.maxx / this.elem.offsetWidth));
-			var cy = this.elem.offsetTop +
-				(this.y / (this.maxy / this.elem.offsetHeight));
+		var cx = this.elem.offsetLeft +
+			(this.x / (this.maxx / this.elem.offsetWidth));
+		var cy = this.elem.offsetTop +
+			(this.y / (this.maxy / this.elem.offsetHeight));
 
-			this.cursor.style.transform = "translate("+cx+"px, "+cy+"px)";
-		}
+		this.cursor.style.transform = "translate("+cx+"px, "+cy+"px)";
+
+		setTimeout(this.update.bind(this), 1000 / 60);
 	}
 };
 mouse.setPos(mouse.maxx / 2, mouse.maxy / 2);
+mouse.update();
