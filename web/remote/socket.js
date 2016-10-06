@@ -43,7 +43,6 @@
 
 	var reconnectTimeout;
 	function onclose() {
-		console.log("closed", arguments);
 		open = false;
 
 		if (reconnectTimeout)

@@ -111,8 +111,6 @@ exports.init = function(app, conf) {
 		else if (nSockets > 0 && ++updateCounter >= 5)
 			update = true;
 
-		console.log(updateCounter, nSockets, update);
-
 		if (update) {
 			cmd.screenshot(screenshotFile);
 			broadcast("reload-screenshot");
