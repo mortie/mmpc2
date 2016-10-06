@@ -4,15 +4,12 @@ var mouse = {
 
 	x: 0,
 	y: 0,
-	px: 0,
-	py: 0,
 
 	maxx: 1920 - 1,
 	maxy: 1080 - 1,
+	updated: false,
 
 	setPos: function(x, y) {
-		this.px = this.x;
-		this.py = this.y;
 		x = Math.round(x);
 		if (x < 0) x = 0;
 		if (x > this.maxx) x = this.maxx;
@@ -23,6 +20,7 @@ var mouse = {
 		if (x !== this.x || y !== this.y) {
 			this.x = x;
 			this.y = y;
+			this.updated = true;
 		}
 	},
 
@@ -41,17 +39,20 @@ var mouse = {
 
 	// Update at most once every x milliseconds
 	update: function() {
-		socket.emit("mousemove", {
-			x: this.x,
-			y: this.y
-		});
+		if (this.updated) {
+			this.updated = false;
+			socket.emit("mousemove", {
+				x: this.x,
+				y: this.y
+			});
 
-		var cx = this.elem.offsetLeft +
-			(this.x / (this.maxx / this.elem.offsetWidth));
-		var cy = this.elem.offsetTop +
-			(this.y / (this.maxy / this.elem.offsetHeight));
+			var cx = this.elem.offsetLeft +
+				(this.x / (this.maxx / this.elem.offsetWidth));
+			var cy = this.elem.offsetTop +
+				(this.y / (this.maxy / this.elem.offsetHeight));
 
-		this.cursor.style.transform = "translate("+cx+"px, "+cy+"px)";
+			this.cursor.style.transform = "translate("+cx+"px, "+cy+"px)";
+		}
 
 		setTimeout(this.update.bind(this), 1000 / 60);
 	}

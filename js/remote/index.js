@@ -117,10 +117,12 @@ exports.init = function(app, conf) {
 		if (update) {
 			cmd.screenshot(screenshotFile, () => {
 				fs.readFile(screenshotFile, (err, buf) => {
-					if (err)
+					if (err) {
 						console.error(err);
-					else
+					} else {
 						screenshot = buf;
+						broadcast("reload-screenshot");
+					}
 				});
 			});
 			updateCounter = 0;
