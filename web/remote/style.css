@@ -30,8 +30,8 @@ form {
 #screen-cursor {
 	position: absolute;
 	height: 24px;
-	left: 0px;
-	top: 0px;
+	left: -2px;
+	top: -2px;
 }
 
 #controls {

@@ -40,15 +40,21 @@
 		else
 			console.log("Warning: no listener for", msg.data);
 	}
+
+	var reconnectTimeout;
 	function onclose() {
+		console.log("closed", arguments);
 		open = false;
 
-		setTimeout(function() {
+		if (reconnectTimeout)
+			clearTimeout(reconnectTimeout);
+
+		reconnectTimeout = setTimeout(function() {
 			sock = new WebSocket(url);
 			sock.onopen = onopen;
 			sock.onerror = sock.onclose = onclose;
 			sock.onmessage = onmessage;
-		}, 2000);
+		}, 1000);
 	}
 
 	sock.onopen = onopen;

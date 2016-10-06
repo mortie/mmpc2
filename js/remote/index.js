@@ -31,7 +31,7 @@ var handlers = {
 	click: function(data) {
 		cmd.xdo(["click", data.btn]);
 	}
-}
+};
 
 var sockets = [];
 function broadcast(name) {
@@ -50,17 +50,18 @@ exports.init = function(app, conf) {
 	var server = new WSServer({ server: app.server });
 
 	var nSockets = 0;
+	var recentlyUpdated = false;
+	function setNotUpdated() { recentlyUpdated = false; }
+	var recentlyUpdatedTimeout;
+	var updateCounter = 0;
 
 	server.on("connection", socket => {
 		nSockets += 1;
 		var id = sockets.length;
 		sockets[id] = socket;
 
-		socket.on("disconnect", () => {
-			nSockets -= 1
-			sockets[id] = undefined;
-		});
 		socket.on("close", () => {
+			nSockets -= 1
 			sockets[id] = undefined;
 		});
 
@@ -70,7 +71,13 @@ exports.init = function(app, conf) {
 				obj = JSON.parse(data);
 			} catch (err) {
 				console.trace(err);
+				return;
 			}
+
+			recentlyUpdated = true;
+			if (recentlyUpdatedTimeout)
+				clearTimeout(recentlyUpdatedTimeout);
+			recentlyUpdatedTimeout = setTimeout(setNotUpdated, 3000);
 
 			if (!obj.name || !obj.data)
 				return console.trace("Missing name or data property");
@@ -96,12 +103,25 @@ exports.init = function(app, conf) {
 			.pipe(res);
 	});
 
-	setInterval(() => {
-		if (nSockets > 0) {
+	// Update screenshot frequently if recently updated, or rarely otherwise
+	function updateScreenshot() {
+		var update = false;
+		if (nSockets > 0 && recentlyUpdated)
+			update = true;
+		else if (nSockets > 0 && ++updateCounter >= 5)
+			update = true;
+
+		console.log(updateCounter, nSockets, update);
+
+		if (update) {
 			cmd.screenshot(screenshotFile);
 			broadcast("reload-screenshot");
+			updateCounter = 0;
 		}
-	}, 1000);
+
+		setTimeout(updateScreenshot, 1000);
+	};
+	updateScreenshot();
 
 	function onTerm() {
 		fs.unlinkSync(screenshotFile);
