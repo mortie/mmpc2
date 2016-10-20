@@ -8,8 +8,9 @@ exports.httpPath = "/remote";
 
 var handlers = {
 	type: function(data) {
-		cmd.xdo(["type", data.chars]);
-		cmd.xdo(["key", "Return"]);
+		cmd.xdo(["type", data.chars], () => {
+			cmd.xdo(["key", "Return"]);
+		});
 	},
 
 	key: function(data) {
