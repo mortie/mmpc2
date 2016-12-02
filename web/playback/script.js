@@ -1,5 +1,10 @@
 function timeformat(sec) {
 	var d = new Date(null);
+	if (typeof sec !== "number") {
+		throw "Expected number, got "+(typeof sec);
+		return;
+	}
+
 	d.setSeconds(Math.floor(sec))
 	return d.toISOString().substr(11, 8);
 }
@@ -34,6 +39,12 @@ var state = {};
  */
 
 function update(state) {
+
+	// If there's no duration, it's probably a live stream
+	if (!state.duration) {
+		state.livestream = true;
+		state.duration = state.time_pos;
+	}
 
 	// Playing
 	if (state.playing)
@@ -90,6 +101,11 @@ function playerset(key, val) {
 
 // Set time
 elems.progress.addEventListener("click", function(evt) {
+
+	// Doesn't make sense to set the time if it's a live stream
+	if (state.livestream)
+		return;
+
 	var pos = (evt.clientX - evt.target.offsetLeft) / evt.target.clientWidth;
 	pos *= evt.target.max;
 	playerset("time-pos", pos);
@@ -105,13 +121,19 @@ elems.pause.addEventListener("click", function() {
 	}
 });
 
-// Back 15 seconds
+// Back 5 seconds
 elems.skip_back.addEventListener("click", function() {
-	playerset("time-pos", state.time_pos - 15);
+	if (state.livestream)
+		return;
+
+	playerset("time-pos", state.time_pos - 5);
 });
 
 // Forwards 15 seconds
 elems.skip_forward.addEventListener("click", function() {
+	if (state.livestream)
+		return;
+
 	playerset("time-pos", state.time_pos + 15);
 });
 
