@@ -8,6 +8,13 @@ var fsutil = require("./js/fsutil");
 
 var conf = JSON.parse(fs.readFileSync("conf.json"));
 
+try {
+	fs.mkdirSync(conf.tmpdir);
+} catch (err) {
+	if (err.code !== "EEXIST")
+		throw err;
+}
+
 var app = web({
 	reload: false
 });
@@ -76,8 +83,9 @@ function onTerm() {
 		return;
 	termed = true;
 
-	// Run exit handlers (currently only remote needs to do anything on exit)
+	// Run exit handlers
 	remote.onTerm();
+	play.onTerm();
 
 	process.exit();
 }

@@ -8,7 +8,7 @@ var notify = require("../notify");
 var player = require("./player");
 var httpStream = require("./http-stream");
 var torrentStreamer = require("./torrent-streamer");
-var subtitleFinder = require("./subtitle-finder");
+var SubtitleFile = require("./subtitle-file");
 
 exports.httpPath = player.httpPath;
 
@@ -17,13 +17,17 @@ exports.cleanupFiles = [];
 var app;
 var conf
 
+exports.onTerm = function() {
+	SubtitleFile.onTerm();
+}
+
 exports.init = function(_app, _conf) {
 	app = _app;
 	conf = _conf;
+	SubtitleFile.init(app, conf);
 	player.init(app, conf);
 	httpStream.init(app, conf);
 	torrentStreamer.init(app, conf);
-	subtitleFinder.init(app, conf);
 }
 
 /*
@@ -42,20 +46,14 @@ exports.playFile = function(path, cb, filename) {
 			return cb();
 		}
 
-		// Find subtitles
-		subtitleFinder.find(stat.size, filename, subFile => {
-
-			// Play!
-			player.play(path, subFile, cb);
-		});
+		// Play!
+		player.play(path, null, cb);
 	});
 }
 
 exports.playUrl = function(url, cb) {
 
 	notify("Playing url...", url);
-
-	// Just play, we won't bother finding subtitles
 	player.play(url, null, cb);
 }
 
@@ -64,17 +62,13 @@ exports.playTorrent = function(magnet, cb) {
 	notify("Playing torrent...");
 
 	// Stream torrent
-	torrentStreamer.stream(magnet, (err, filesize, filename) => {
+	torrentStreamer.stream(magnet, (err, filesize, filename, subtitles) => {
 		if (err)
 			return cb(err);
 
-		// Find subtitles
-		subtitleFinder.find(filesize, filename, subFile => {
-
-			// Play!
-			notify("Starting playback.", filename);
-			player.play(app.getAddress()+httpStream.httpPath, subFile, cb);
-		});
+		// Play!
+		notify("Starting playback.", filename);
+		player.play(app.getAddress()+httpStream.httpPath, subtitles, cb);
 	});
 }
 

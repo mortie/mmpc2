@@ -17,25 +17,43 @@
 		</div>
 
 		<div id="group-buttons">
-			<button id="mute">Mute</button>
-			<button id="skip-back">&lt;</button>
-			<button id="pause">||</button>
-			<button id="skip-forward">&gt;</button>
-			<button id="exit">Exit</button>
+		<button class="small" id="mute">Mute</button>
+		<button class="small" id="skip-back">&lt;</button>
+		<button class="small" id="pause">||</button>
+		<button class="small" id="skip-forward">&gt;</button>
+		<button class="small" id="exit">Exit</button>
+	</div>
+
+	<div id="group-volume">
+		<div class="title">Volume <span id="volume-text">0</span>%</div>
+		<input id="volume" type="range">
+	</div>
+
+	<div id="group-sub-delay">
+		<div class="title">Subtitle Delay <span id="sub-delay">0</span>s</div>
+		<button class="small" id="sub-delay-less2">-1</button>
+		<button class="small" id="sub-delay-less">-0.1</button>
+		<button class="small" id="sub-delay-reset">0</button>
+		<button class="small" id="sub-delay-more">+0.1</button>
+		<button class="small" id="sub-delay-more2">+1</button>
 		</div>
 
-		<div id="group-volume">
-			Volume <span id="volume-text">0</span>%<br>
-			<input id="volume" type="range">
-		</div>
+		<div id="group-subtitles">
+			<div class="title">
+				Subtitles
+				<button onclick="document.getElementById('subtitles-upload').click()">
+					Upload
+				</button>
+			</div>
+			<div id="subtitles-options"></div>
 
-		<div id="group-sub-delay">
-			Subtitle Delay <span id="sub-delay">0</span>s<br>
-			<button id="sub-delay-less2">-1</button>
-			<button id="sub-delay-less">-0.1</button>
-			<button id="sub-delay-reset">0</button>
-			<button id="sub-delay-more">+0.1</button>
-			<button id="sub-delay-more2">+1</button>
+			<form class="hidden" enctype="multipart/form-data" method="post" action="upload">
+				<input
+					onchange="this.parentNode.submit()"
+					name="file"
+					type="file"
+					id="subtitles-upload">
+			</form>
 		</div>
 
 		<script src="/webstuff.js"></script>

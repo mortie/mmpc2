@@ -1,3 +1,15 @@
+function getRadioVal(name) {
+	var btns = document.getElementsByName(name);
+
+	for (var i in btns) {
+		var btn = btns[i];
+		if (btn.checked)
+			return btn.value;
+	}
+
+	return null;
+}
+
 function timeformat(sec) {
 	var d = new Date(null);
 	if (typeof sec !== "number") {
@@ -29,16 +41,24 @@ var elems = {
 	sub_delay_less2: $$("#sub-delay-less2"),
 	sub_delay_more: $$("#sub-delay-more"),
 	sub_delay_more2: $$("#sub-delay-more2"),
-	sub_delay_reset: $$("#sub-delay-reset")
+	sub_delay_reset: $$("#sub-delay-reset"),
+
+	subtitles_options: $$("#subtitles-options")
 };
 
 var state = {};
+var oldState = state;
 
 /*
  * Update GUI stuff
  */
 
-function update(state) {
+function update(state, oldState) {
+
+	// If there's no time_pos, we probably just haven't started yet
+	if (state.time_pos === undefined) {
+		state.time_pos = 0;
+	}
 
 	// If there's no duration, it's probably a live stream
 	if (!state.duration) {
@@ -62,8 +82,8 @@ function update(state) {
 	elems.progress.max = state.duration;
 
 	// Buttons
-	elems.pause.className = state.paused ? "active" : "";
-	elems.mute.className = state.muted ? "active" : "";
+	elems.pause.className = state.paused ? "small active" : "small";
+	elems.mute.className = state.muted ? "small active" : "small";
 
 	// Volume
 	elems.volume.min = 0;
@@ -74,6 +94,45 @@ function update(state) {
 
 	// Sub Delay
 	elems.sub_delay.innerHTML = state.sub_delay;
+
+	// Subtitles
+	var subChanged = state.subtitle !== oldState.subtitle;
+	var noOldSubs = oldState.subtitles === undefined;
+	var subsLengthDiffer = oldState.subtitles && 
+		oldState.subtitles.length !== state.subtitles.length;
+
+	if (subChanged || noOldSubs || subsLengthDiffer) {
+		var opts = elems.subtitles_options;
+
+		// Clear radio buttons
+		while (opts.firstChild)
+			opts.removeChild(opts.firstChild);
+
+		// Helper to create a radio button
+		function btn(name, value, checked) {
+			var lbl = document.createElement("label");
+
+			var b = document.createElement("input");
+			b.type = "radio";
+			b.name = "subtitle";
+			b.value = value;
+			if (checked)
+				b.checked = true;
+
+			var txt = document.createTextNode(name);
+
+			lbl.appendChild(b);
+			lbl.appendChild(txt);
+
+			return lbl;
+		}
+
+		// Add radio buttons
+		opts.appendChild(btn("None", "none", state.subtitle === null));
+		state.subtitles.forEach(function(sub) {
+			opts.appendChild(btn(sub, sub, state.subtitle === sub));
+		});
+	}
 }
 
 function checkState() {
@@ -82,7 +141,8 @@ function checkState() {
 			return;
 
 		state = JSON.parse(res);
-		update(state);
+		update(state, oldState);
+		oldState = state;
 	});
 }
 
@@ -93,10 +153,14 @@ setInterval(checkState, 500);
  * React to input
  */
 
-function playerset(key, val) {
-	post("/playback/set/"+key+"/"+val, null, function() {
+function playercmd(ep, args) {
+	post("/playback/"+ep+"/"+(args.join("/")), null, function() {
 		checkState();
 	});
+}
+
+function playerset(key, val) {
+	playercmd("set", [key, val]);
 }
 
 // Set time
@@ -180,6 +244,17 @@ elems.sub_delay_more2.addEventListener("click", function() {
 // Set subtitle delay to 0
 elems.sub_delay_reset.addEventListener("click", function() {
 	playerset("sub-delay", 0);
+});
+
+// Subtitles
+elems.subtitles_options.addEventListener("click", function() {
+	var val = getRadioVal("subtitle");
+
+	if (val === state.subtitle || (val === "none" && state.subtitle === null))
+		return;
+
+	console.log("Setting subtitle to", val, "from", state.subtitle);
+	playercmd("set-subtitle", [val]);
 });
 
 window.addEventListener("keydown", function(evt) {

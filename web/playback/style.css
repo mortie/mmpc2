@@ -12,7 +12,7 @@ body > div {
 	margin-bottom: 12px;
 }
 
-button {
+button.small {
 	display: inline-block;
 	padding: 0px;
 	border: 1px solid #666;
@@ -23,9 +23,13 @@ button {
 	margin-right: 2px;
 }
 
-button:active,
-button.active {
+button.small:active,
+button.small.active {
 	background: #aaa;
+}
+
+.hidden {
+	display: none;
 }
 
 /*
@@ -61,10 +65,8 @@ input[type="range"] {
 
 #group-volume {
 	text-align: center;
-	border-top: 1px solid #ccc;
-}
 
-#group-volume {
+	border-top: 1px solid #ccc;
 	padding-top: 12px;
 	margin-top: 24px;
 }
@@ -75,15 +77,29 @@ input[type="range"] {
 
 #group-sub-delay {
 	text-align: center;
-}
 
-#group-sub-delay {
 	border-top: 1px solid #ccc;
+	padding-top: 12px;
+	margin-top: 6px;
 }
 
-#group-sub-delay {
+/*
+ * Subtitles
+ */
+
+#group-subtitles {
+	text-align: center;
+
+	border-top: 1px solid #ccc;
 	padding-top: 12px;
 }
-#group-sub-delay button {
+
+#subtitles-options {
 	margin-top: 6px;
+	text-align: left;
+	clear: both;
+	display: inline-block;
+}
+#subtitles-options label {
+	display: block;
 }

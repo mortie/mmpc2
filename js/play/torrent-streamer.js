@@ -1,17 +1,19 @@
 var httpStream = require("./http-stream");
+var SubtitleFile = require("./subtitle-file");
 var torrentStream = require("torrent-stream");
 
 var mediaformats = [
 	"webm", "mkv", "flv", "vob", "avi", "mov","wmv", "you",
 	"asf", "mp4", "m4p", "m4v", "svi", "ogv", "ogg"
-]
+];
 
-var rxstr = 
+var mediarxstr = 
 	"\\.("+
 	mediaformats.join("|")+
 	")$";
 
-var mediarx = new RegExp(rxstr, "i");
+var mediarx = new RegExp(mediarxstr, "i");
+var subrx = /\.srt$/i;
 
 var engine;
 var conf;
@@ -35,11 +37,14 @@ exports.stream = function(magnet, cb) {
 
 	engine.on("ready", () => {
 		var file = null;
+		var subtitles = [];
 
 		engine.files.forEach(f => {
 			if (mediarx.test(f.name) &&
 					(file == null || f.length > file.length)) {
 				file = f;
+			} else if (subrx.test(f.name)) {
+				subtitles.push(SubtitleFile.fromTorrent(f));
 			}
 		});
 
@@ -56,7 +61,7 @@ exports.stream = function(magnet, cb) {
 			return rs;
 		}
 
-		cb(null, file.length, file.name);
+		cb(null, file.length, file.name, subtitles);
 	});
 }
 
