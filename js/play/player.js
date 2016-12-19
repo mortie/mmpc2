@@ -113,7 +113,7 @@ exports.play = function(path, subtitles, cb) {
 
 	lchild.running = true;
 	lchild.subtitle = null;
-	lchild.subtitles = subtitles;
+	lchild.subtitles = subtitles || [];
 
 	lchild.once("close", () => {
 		if (lchild.running) exports.stop();

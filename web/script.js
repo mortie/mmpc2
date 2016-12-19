@@ -16,3 +16,10 @@ get("/additional-links", function(err, res) {
 		$$("#parts").appendChild(form);
 	});
 });
+
+get("/is-playing", function(err, res) {
+	if (JSON.parse(res)) {
+		if (confirm("Go to player controls?"))
+			location.pathname = "/playback";
+	}
+});

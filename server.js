@@ -21,13 +21,6 @@ var app = web({
 play.init(app, conf);
 remote.init(app, conf);
 
-app.express.use((req, res, next) => {
-	if (req.url === "/" && play.isPlaying())
-		res.redirect(play.httpPath);
-	else
-		next();
-});
-
 app.static("web");
 
 app.post("/play/url", (req, res) => {
@@ -75,6 +68,10 @@ app.post("/play/file", (req, res) => {
 
 app.get("/additional-links", (req, res) => {
 	res.json(conf.additional_links);
+});
+
+app.get("/is-playing", (req, res) => {
+	res.json(play.isPlaying());
 });
 
 var termed = false;
