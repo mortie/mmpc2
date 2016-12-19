@@ -115,7 +115,8 @@ exports.play = function(path, subtitles, cb) {
 	lchild.subtitle = null;
 	lchild.subtitles = subtitles || [];
 
-	lchild.once("close", () => {
+	lchild.once("close", code => {
+		console.log("mpv exited with code", code);
 		if (lchild.running) exports.stop();
 	});
 	lchild.on("error", err => console.error(err.toString()));
