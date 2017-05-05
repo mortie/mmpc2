@@ -119,8 +119,7 @@ function update(state, oldState) {
 			if (checked)
 				b.checked = true;
 
-			var txt = document.createElement("div");
-			txt.innerText = name;
+			var txt = document.createTextNode(" "+name);
 
 			lbl.appendChild(b);
 			lbl.appendChild(txt);

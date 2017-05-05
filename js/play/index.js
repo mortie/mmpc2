@@ -1,10 +1,8 @@
 var fs = require("fs");
-var http = require("http");
-var https = require("https");
 var pathlib = require("path");
-var urllib = require("url");
 var fsutil = require("../fsutil");
 var notify = require("../notify");
+var httpreq = require("../httpreq");
 var player = require("./player");
 var httpStream = require("./http-stream");
 var torrentStreamer = require("./torrent-streamer");
@@ -68,7 +66,9 @@ exports.playTorrent = function(magnet, cb) {
 
 		// Play!
 		notify("Starting playback.", filename);
-		player.play(app.getAddress()+httpStream.httpPath, subtitles, cb);
+		player.play(
+			app.getAddress()+httpStream.httpPath, subtitles, cb,
+			filesize, filename);
 	});
 }
 
@@ -84,29 +84,22 @@ exports.playTorrentPage = function(url, cb) {
 
 	notify("Finding magnet on torrent page...", url);
 
-	var urlobj = urllib.parse(url);
-	var o = urlobj.protocol === "https:" ? https : http;
-	o.request(urlobj, res => {
-		var str = "";
+	httpreq.read(url, (err, str) => {
+		if (err) {
+			notify("Error downloading page!", err.toString());
+			console.trace(err);
+			return cb();
+		};
 
-		res
-			.on("data", d => str += d )
-			.on("error", err => {
-				notify("Error downloading page!", err.toString());
-				console.trace(err);
-				cb();
-			})
-			.on("end", () => {
-				var magnet = findMagnet(str);
-				if (!magnet) {
-					notify("No magnet link on page!");
-					cb();
-					return;
-				}
+		var magnet = findMagnet(str);
+		if (!magnet) {
+			notify("No magnet link on page!");
+			cb();
+			return;
+		}
 
-				exports.playTorrent(magnet, cb);
-			});
-	}).end();
+		exports.playTorrent(magnet, cb);
+	});
 }
 
 exports.isPlaying = player.isPlaying;

@@ -1,13 +1,15 @@
 var fs = require("fs");
 var AdmZip = require("adm-zip");
+var urllib = require("url");
 var fsutil = require("../fsutil");
-
+var httpreq = require("../httpreq");
 var conf;
 var subsdir;
 
 module.exports = SubtitleFile;
 module.exports.init = init;
 module.exports.onTerm = onTerm;
+module.exports.fromOpenSubtitles = fromOpenSubtitles;
 module.exports.fromTorrent = fromTorrent;
 module.exports.fromFile = fromFile;
 module.exports.fromZip = fromZip;
@@ -43,6 +45,20 @@ function SubtitleFile(unescapedName, createReadStream) {
 	}
 
 	return self;
+}
+
+// Input: opensubtitle-api subtitle object
+// returns: SubtitleFile
+function fromOpenSubtitles(obj) {
+	function createReadStream() {
+		var rs = {
+			pipe: function(ws) {
+				httpreq(obj.url, rs => rs.pipe(ws));
+			}
+		};
+		return rs;
+	}
+	return SubtitleFile(obj.lang+" ("+obj.filename+")", createReadStream);
 }
 
 // Input: torrent file from torrent-stream

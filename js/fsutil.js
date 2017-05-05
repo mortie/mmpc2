@@ -45,5 +45,5 @@ exports.rmdir = function(dir) {
 			fs.unlinkSync(fname)
 	});
 
-	fs.rmdir(dir);
+	fs.rmdirSync(dir);
 }

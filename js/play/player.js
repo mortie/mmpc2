@@ -4,6 +4,7 @@ var net = require("net");
 var Queue = require("../queue");
 var SubtitleFile = require("./subtitle-file");
 var notify = require("../notify");
+var opensubs = require("./opensubs");
 
 exports.httpPath = "/playback";
 
@@ -26,6 +27,15 @@ function cmd(params, cb) {
 		} else if (obj.error && obj.error !== "success") {
 			console.log("mpv reply to '"+(params.join(" "))+"':", obj.error);
 		}
+	});
+}
+
+function addOpenSubs(filesize, filename) {
+	opensubs.find({ filesize: filesize, filename: filename }, subs => {
+		subs.forEach(sub => {
+			var s = SubtitleFile.fromOpenSubtitles(sub);
+			child.subtitles.push(s);
+		});
 	});
 }
 
@@ -54,8 +64,9 @@ function getState(cb) {
 	var cbs = 7;
 	function next() {
 		cbs -= 1;
-		if (cbs === 0)
+		if (cbs === 0) {
 			cb(state);
+		}
 	}
 
 	cmd(["get_property", "pause"], res => {
@@ -98,8 +109,11 @@ exports.isPlaying = function() {
 	return child != null;
 }
 
-exports.play = function(path, subtitles, cb) {
+exports.play = function(path, subtitles, cb, filesize, filename) {
 	exports.stop();
+
+	if (filesize && filename)
+		addOpenSubs(filesize, filename);
 
 	var args = [
 		path,

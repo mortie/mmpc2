@@ -102,18 +102,14 @@ input[type="range"] {
 	max-width: 600px;
 	margin-left: auto;
 	margin-right: auto;
+	transform: translateX(10px);
 }
 #subtitles-options label {
 	display: block;
 	max-width: 100%;
 	word-wrap: break-word;
 }
-#subtles-options label input {
-	float: left;
-}
-#subtitles-options label div {
-	width: calc(100% - 30px);
+#subtitles-options label input {
 	display: inline-block;
-	word-wrap: break-word;
-	float: right;
+	margin-left: -20px;
 }
