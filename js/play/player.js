@@ -48,7 +48,7 @@ function getState(cb) {
 	var state = {
 		playing: true,
 		subtitle: child.subtitle,
-		subtitles: child.subtitles.map(s => s.name)
+		subtitles: child.subtitles.map(s => s.escapedName)
 	};
 
 	var cbs = 7;
@@ -220,7 +220,7 @@ exports.init = function(app, conf) {
 					child.subtitles.push(sub));
 			} else if (/\.srt/.test(file.name)) {
 				child.subtitles.push(
-					SubtitleFile.fromFile(file.path));
+					SubtitleFile.fromFile(file.path, file.name));
 			} else {
 				notify("Unknown file type", file.name);
 				fs.unlink(file.path);

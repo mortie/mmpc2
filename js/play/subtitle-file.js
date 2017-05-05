@@ -22,7 +22,7 @@ function SubtitleFile(unescapedName, createReadStream) {
 	// and encode URI component as it'll be sent
 	// as a GET request and such
 	self.name = unescapedName.match(/\/?([^\/]+)$/)[1];
-	self.name = encodeURIComponent(self.name);
+	self.escapedName = encodeURIComponent(self.name);
 
 	var downloaded = false;
 	var path = subsdir+"/"+self.name;
@@ -52,8 +52,8 @@ function fromTorrent(f) {
 
 // Input: path to subtitle file
 // Returns: SubtitleFile
-function fromFile(path) {
-	return SubtitleFile(path, () => fs.createReadStream(path));
+function fromFile(path, name) {
+	return SubtitleFile(name || path, () => fs.createReadStream(path));
 }
 
 // Input: path to zip file
@@ -63,27 +63,14 @@ function fromZip(path) {
 	var subs = [];
 
 	function createReadStream(f) {
-		var ws;
-		var data;
+		var data = zip.readFile(f);
 
 		var rs = {
-			pipe: function(_ws) {
-				ws = _ws;
-
-				if (data) {
-					ws.write(data);
-					ws.end();
-				}
-			}
-		};
-
-		f.getDataAsync(_data => {
-			data = _data;
-			if (ws) {
+			pipe: function(ws) {
 				ws.write(data);
 				ws.end();
 			}
-		});
+		};
 
 		return rs;
 	}

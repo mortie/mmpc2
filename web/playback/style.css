@@ -99,7 +99,10 @@ input[type="range"] {
 	text-align: left;
 	clear: both;
 	display: inline-block;
+	max-width: 100%;
 }
 #subtitles-options label {
 	display: block;
+	max-width: 100%;
+	word-wrap: break-word;
 }

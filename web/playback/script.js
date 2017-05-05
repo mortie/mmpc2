@@ -130,7 +130,8 @@ function update(state, oldState) {
 		// Add radio buttons
 		opts.appendChild(btn("None", "none", state.subtitle === null));
 		state.subtitles.forEach(function(sub) {
-			opts.appendChild(btn(sub, sub, state.subtitle === sub));
+			opts.appendChild(btn(
+				decodeURIComponent(sub), sub, state.subtitle === sub));
 		});
 	}
 }
@@ -253,10 +254,5 @@ elems.subtitles_options.addEventListener("click", function() {
 	if (val === state.subtitle || (val === "none" && state.subtitle === null))
 		return;
 
-	console.log("Setting subtitle to", val, "from", state.subtitle);
 	playercmd("set-subtitle", [val]);
-});
-
-window.addEventListener("keydown", function(evt) {
-	console.log(evt.keyCode);
 });
