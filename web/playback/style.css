@@ -98,11 +98,22 @@ input[type="range"] {
 	margin-top: 6px;
 	text-align: left;
 	clear: both;
-	display: inline-block;
-	max-width: 100%;
+	width: 100%;
+	max-width: 600px;
+	margin-left: auto;
+	margin-right: auto;
 }
 #subtitles-options label {
 	display: block;
 	max-width: 100%;
 	word-wrap: break-word;
+}
+#subtles-options label input {
+	float: left;
+}
+#subtitles-options label div {
+	width: calc(100% - 30px);
+	display: inline-block;
+	word-wrap: break-word;
+	float: right;
 }

@@ -1,5 +1,6 @@
 var fs = require("fs");
 var AdmZip = require("adm-zip");
+var fsutil = require("../fsutil");
 
 var conf;
 var subsdir;
@@ -100,10 +101,7 @@ function init(app, _conf) {
 // Destroy tmp/subtitles
 function onTerm() {
 	try {
-		fs.readdirSync(subsdir).forEach(f => {
-			fs.unlinkSync(subsdir+"/"+f);
-		});
-		fs.rmdirSync(subsdir);
+		fsutil.rmdir(subsdir);
 	} catch (err) {
 		if (err.code !== "ENOENT")
 			throw err;

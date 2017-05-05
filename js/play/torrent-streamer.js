@@ -1,6 +1,7 @@
 var httpStream = require("./http-stream");
 var SubtitleFile = require("./subtitle-file");
 var torrentStream = require("torrent-stream");
+var fsutil = require("../fsutil");
 
 var mediaformats = [
 	"webm", "mkv", "flv", "vob", "avi", "mov","wmv", "you",

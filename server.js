@@ -9,6 +9,13 @@ var fsutil = require("./js/fsutil");
 var conf = JSON.parse(fs.readFileSync("conf.json"));
 
 try {
+	fsutil.rmdir(conf.tmpdir)
+} catch (err) {
+	if (err.code !== "ENOENT")
+		throw err;
+}
+
+try {
 	fs.mkdirSync(conf.tmpdir);
 } catch (err) {
 	if (err.code !== "EEXIST")
