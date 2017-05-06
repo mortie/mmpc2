@@ -4,10 +4,6 @@
 	font-family: Sans-Serif
 }
 
-body {
-	margin: 12px;
-}
-
 body > div {
 	margin-bottom: 12px;
 }
@@ -18,14 +14,8 @@ button.small {
 	border: 1px solid #666;
 	width: 50px;
 	height: 32px;
-	background: #ddd;
 	margin-left: 2px;
 	margin-right: 2px;
-}
-
-button.small:active,
-button.small.active {
-	background: #aaa;
 }
 
 .hidden {
@@ -107,9 +97,10 @@ input[type="range"] {
 #subtitles-options label {
 	display: block;
 	max-width: 100%;
-	word-wrap: break-word;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 #subtitles-options label input {
 	display: inline-block;
-	margin-left: -20px;
 }

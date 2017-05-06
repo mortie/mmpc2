@@ -111,6 +111,8 @@ function update(state, oldState) {
 		// Helper to create a radio button
 		function btn(name, value, checked) {
 			var lbl = document.createElement("label");
+			if (name.length > 20)
+				lbl.title = name;
 
 			var b = document.createElement("input");
 			b.type = "radio";
