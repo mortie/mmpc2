@@ -18,6 +18,10 @@ button.small {
 	margin-right: 2px;
 }
 
+button.active {
+	background-color: #2c88b8;
+}
+
 .hidden {
 	display: none;
 }
