@@ -29,6 +29,13 @@ exports.init = function(_app, _conf) {
 }
 
 /*
+ * Set what we should redirect to
+ */
+exports.redirectTo = function(path) {
+	player.redirectTo = path;
+}
+
+/*
  * Filename is optional; in case you want to provide a filename for subtitles
  * but want a different path
  */
@@ -45,18 +52,18 @@ exports.playFile = function(path, cb, filename) {
 		}
 
 		// Play!
-		player.play(path, null, cb);
+		console.log(filename);
+		console.log(stat.size);
+		player.play(path, null, cb, stat.size, filename);
 	});
 }
 
 exports.playUrl = function(url, cb) {
-
 	notify("Playing url...", url);
-	player.play(url, null, cb);
+	player.play(url, null, cb, null, null, redirectTo);
 }
 
 exports.playTorrent = function(magnet, cb) {
-
 	notify("Playing torrent...");
 
 	// Stream torrent
@@ -72,7 +79,7 @@ exports.playTorrent = function(magnet, cb) {
 	});
 }
 
-exports.playTorrentPage = function(url, cb) {
+exports.playTorrentPage = function(url, cb, redirectTo) {
 	function findMagnet(str) {
 		var rx = /['"](magnet:[^'"]+)['"]/;
 		var match = str.match(rx);

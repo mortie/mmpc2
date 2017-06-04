@@ -7,6 +7,7 @@ var notify = require("../notify");
 var opensubs = require("./opensubs");
 
 exports.httpPath = "/playback";
+exports.redirectTo = "/";
 
 var child = null;
 var subsdir;
@@ -32,6 +33,9 @@ function cmd(params, cb) {
 
 function addOpenSubs(filesize, filename) {
 	opensubs.find({ filesize: filesize, filename: filename }, subs => {
+		if (child == null)
+			return;
+
 		subs.forEach(sub => {
 			var s = SubtitleFile.fromOpenSubtitles(sub);
 			child.subtitles.push(s);
@@ -42,6 +46,7 @@ function addOpenSubs(filesize, filename) {
 function getState(cb) {
 	if (child == null) {
 		cb({
+			redirectTo: exports.redirectTo,
 			playing: false,
 			paused: false,
 			muted: false,
@@ -155,6 +160,8 @@ exports.play = function(path, subtitles, cb, filesize, filename) {
 			lchild.sock.on("error", err => console.trace(err));
 
 			cmd(["set_property", "fullscreen", "yes"]);
+			cmd(["set_property", "sub-visibility", false]);
+			cmd(["sub-remove"]);
 
 			cb();
 		});

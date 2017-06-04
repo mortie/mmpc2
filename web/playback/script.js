@@ -70,7 +70,7 @@ function update(state, oldState) {
 	if (state.playing)
 		elems.is_playing.innerHTML = "Playing";
 	else
-		location.href = "/";
+		location.href = state.redirectTo;
 
 	// Progress text
 	elems.progress_text.innerHTML =

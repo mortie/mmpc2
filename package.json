@@ -1,6 +1,6 @@
 {
   "name": "mmpc3",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "",
   "main": "server.js",
   "scripts": {
@@ -11,7 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "adm-zip": "^0.4.7",
-    "mime": "^1.3.4",
+    "mime": "^1.3.6",
     "opensubtitles-api": "^4.0.0-rc1",
     "torrent-stream": "^1.0.3",
     "webstuff": "^1.5.3",

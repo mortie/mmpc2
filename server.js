@@ -2,9 +2,10 @@ var fs = require("fs");
 var pathlib = require("path");
 var web = require("webstuff");
 var notify = require("./js/notify");
+var fsutil = require("./js/fsutil");
 var play = require("./js/play");
 var remote = require("./js/remote");
-var fsutil = require("./js/fsutil");
+var local = require("./js/local");
 
 var conf = JSON.parse(fs.readFileSync("conf.json"));
 
@@ -27,10 +28,12 @@ var app = web({
 });
 play.init(app, conf);
 remote.init(app, conf);
+local.init(app, conf);
 
 app.static("web");
 
 app.post("/play/url", (req, res) => {
+	player.redirectTo("/");
 	req.parseBody((err, fields) => {
 		if (!fields.url)
 			return res.redirect("/");
@@ -50,6 +53,7 @@ app.post("/play/url", (req, res) => {
 });
 
 app.post("/play/file", (req, res) => {
+	player.redirectTo("/");
 	notify("Receiving file...");
 	req.parseBody((err, fields, files) => {
 		var file = files.file;
@@ -90,6 +94,7 @@ function onTerm() {
 	// Run exit handlers
 	remote.onTerm();
 	play.onTerm();
+	local.onTerm();
 
 	process.exit();
 }

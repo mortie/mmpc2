@@ -1,0 +1,43 @@
+.hidden {
+	display: none;
+}
+
+#path {
+	padding-bottom: 5px;
+	border-bottom: 1px solid black;
+}
+
+#path .component {
+	display: inline-block;
+	margin-left: 2px;
+	margin-right: 2px;
+
+	overflow-x: hidden;
+	max-width: 200px;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+#path a {
+	padding: 0px 10px;
+}
+
+#path {
+	line-height: 15px;
+}
+
+#content {
+	margin-top: 20px;
+}
+
+#content .entry {
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+#content a.dir {
+	color: #2c88b8;
+}
+
+#content a {
+	white-space: nowrap;
+}

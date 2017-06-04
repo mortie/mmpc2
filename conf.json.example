@@ -1,4 +1,5 @@
 {
 	"tmpdir": "tmp",
-	"additional_links": []
+	"additional_links": [],
+	"local_media": "/path/to/media"
 }
