@@ -60,7 +60,7 @@ exports.playFile = function(path, cb, filename) {
 
 exports.playUrl = function(url, cb) {
 	notify("Playing url...", url);
-	player.play(url, null, cb, null, null, redirectTo);
+	player.play(url, null, cb, null, null);
 }
 
 exports.playTorrent = function(magnet, cb) {
@@ -79,7 +79,7 @@ exports.playTorrent = function(magnet, cb) {
 	});
 }
 
-exports.playTorrentPage = function(url, cb, redirectTo) {
+exports.playTorrentPage = function(url, cb) {
 	function findMagnet(str) {
 		var rx = /['"](magnet:[^'"]+)['"]/;
 		var match = str.match(rx);
