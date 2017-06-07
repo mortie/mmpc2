@@ -33,7 +33,7 @@ local.init(app, conf);
 app.static("web");
 
 app.post("/play/url", (req, res) => {
-	player.redirectTo("/");
+	play.redirectTo("/");
 	req.parseBody((err, fields) => {
 		if (!fields.url)
 			return res.redirect("/");
