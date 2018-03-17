@@ -122,6 +122,7 @@ exports.play = function(path, subtitles, cb, filesize, filename) {
 
 	var args = [
 		path,
+		"--pause",
 		"--no-cache-pause",
 		"--no-resume-playback",
 		"--input-ipc-server", ipcServer

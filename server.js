@@ -53,7 +53,7 @@ app.post("/play/url", (req, res) => {
 });
 
 app.post("/play/file", (req, res) => {
-	player.redirectTo("/");
+	play.redirectTo("/");
 	notify("Receiving file...");
 	req.parseBody((err, fields, files) => {
 		var file = files.file;

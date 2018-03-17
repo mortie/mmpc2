@@ -3,7 +3,7 @@ var OpenSubs = require("opensubtitles-api");
 var subs = new OpenSubs({ useragent: "mmpc-media-streamer" });
 
 exports.find = function(opts, cb) {
-	subs.search(opts).then(subtitles => {
+	subs.search({ query: opts.filename }).then(subtitles => {
 		var arr = [];
 		for (var i in subtitles) {
 			arr.push(subtitles[i]);
